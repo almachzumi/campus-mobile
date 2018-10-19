@@ -12,7 +12,7 @@ import DiningCardContainer from '../dining/DiningCardContainer'
 import SpecialEventsCardContainer from '../specialEvents/SpecialEventsCardContainer'
 import FinalsCard from '../schedule/FinalsCard'
 import ScheduleCardContainer from '../schedule/ScheduleCardContainer'
-import ParkingCardContainer from '../parking/ParkingCardContainer'
+//import ParkingCardContainer from '../parking/ParkingCardContainer'
 import { platformAndroid, gracefulFatalReset } from '../../util/general'
 import css from '../../styles/css'
 import logger from '../../util/logger'
@@ -127,7 +127,7 @@ export class Home extends React.Component {
 							activeCards.push(<NewsCardContainer key="news" />)
 							break
 						case 'parking':
-							activeCards.push(<ParkingCardContainer key="parking" />)
+							//activeCards.push(<ParkingCardContainer key="parking" />)
 							break
 						default:
 							return gracefulFatalReset(new Error('Invalid card in state: ', card))
