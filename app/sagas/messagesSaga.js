@@ -10,14 +10,14 @@ import { delay } from 'redux-saga'
 import Device from 'react-native-device-info'
 import firebase from 'react-native-firebase'
 import moment from 'moment'
-import Toast from 'react-native-simple-toast'
 
 import MessagesService from '../services/messagesService'
 import logger from '../util/logger'
 import { MESSAGING_TTL } from '../AppSettings'
 
-const getUserData = state => (state.user)
-const getMessages = state => (state.messages)
+const getUserData = state => (state.user),
+	getMessages = state => (state.messages),
+	MAX_BADGE_COUNT = 99
 
 function* getTopics() {
 	try {
@@ -130,8 +130,8 @@ function* updateMessages(action) {
 				// check for how many of the new messages have a timestamp after latestTimeStamp
 				// latestTimeStamp is set when the user last opened the notfications pages
 				let { length } = sortedMessages
-				if (sortedMessages.length > 10) {
-					length = 10
+				if (sortedMessages.length > MAX_BADGE_COUNT) {
+					length = MAX_BADGE_COUNT
 				}
 				for (let i = 0; i < length; i++) {
 					if (sortedMessages[i].timestamp > profile.latestTimeStamp) {
@@ -145,11 +145,6 @@ function* updateMessages(action) {
 		} catch (error) {
 			yield put({ type: 'GET_MESSAGES_FAILURE', error })
 			logger.trackException(error, false)
-			Toast.showWithGravity(
-				'Oops. There was a network problem.',
-				Toast.SHORT,
-				Toast.BOTTOM
-			)
 		}
 	} else {
 		// If we aren't signed in, get messages from public topics
@@ -176,8 +171,8 @@ function* updateMessages(action) {
 				// check for how many of the new messages have a timestamp after latestTimeStamp
 				// latestTimeStamp is set when the user last opened the notfications pages
 				let { length } = sortedMessages
-				if (sortedMessages.length > 9) {
-					length = 9
+				if (sortedMessages.length > MAX_BADGE_COUNT) {
+					length = MAX_BADGE_COUNT
 				}
 				for (let i = 0; i < length; i++) {
 					if (sortedMessages[i].timestamp > profile.latestTimeStamp) {
@@ -191,11 +186,6 @@ function* updateMessages(action) {
 		} catch (error) {
 			yield put({ type: 'GET_MESSAGES_FAILURE', error })
 			logger.trackException(error, false)
-			Toast.showWithGravity(
-				'Oops. There was a network problem.',
-				Toast.SHORT,
-				Toast.BOTTOM
-			)
 		}
 	}
 }

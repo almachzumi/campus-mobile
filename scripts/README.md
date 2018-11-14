@@ -2,34 +2,46 @@
 
 2) In your ".campusmobile" folder, create a file "env.js" with the following content:
 
-// Modify These Values
-var APP_NAME = 'Your App Name'
-var GOOGLE_ANALYTICS_ID = 'Google Analytics ID Here'
-var GOOGLE_MAPS_API_KEY = 'Google Maps API Key Here'
-var FIREBASE_IOS_KEY = 'FireBase IOS API Key Here'
-var FIREBASE_ANDROID_KEY = 'FireBase Android API Key Here'
-var AUTH_SERVICE_API_KEY = 'Auth Service API Key Here'
+```module.exports = {
 
-// Placeholder Values (Do Not Modify)
-var APP_NAME_PH = 'Campus Mobile'
-var GOOGLE_ANALYTICS_ID_PH = 'GOOGLE_ANALYTICS_ID_PH'
-var GOOGLE_MAPS_API_KEY_PH = 'GOOGLE_MAPS_API_KEY_PH'
-var FIREBASE_KEY_PH = 'FIREBASE_KEY_PH'
-var AUTH_SERVICE_API_KEY_PH = 'AUTH_SERVICE_API_KEY_PH'
+	/* PROD & QA */
+	
+	APP_NAME: 'Your App Name',
+	GOOGLE_MAPS_API_KEY: 'Your Google Maps API Key',
+	GS_IOS_BUNDLE_ID: 'Your IOS Bundle ID',
+	GS_ANDROID_BUNDLE_ID: 'Your Android Bundle ID',
+	BUGSNAG_KEY: 'Your Bugsnag Key',
 
-// Exports (Do Not Modify)
-exports.APP_NAME = APP_NAME
-exports.APP_NAME_PH = APP_NAME_PH
+	/* PROD ONLY */
+	GOOGLE_ANALYTICS_ID_PROD: 'Your PROD Google Analytics ID',
+	AUTH_SERVICE_API_KEY_PROD: 'Your PROD Auth Service API Key',
+	GS_PROD_PROJECT_ID: 'Your PROD Google Services Project ID',
+	GS_PROD_STORAGE_BUCKET: 'Your PROD Google Services Storage Bucket',
+	GS_PROD_FIREBASE_URL: 'Your PROD Firebase URL',
+	GS_PROD_PROJECT_NUMBER: 'Your PROD Google Services Project Number',
+	GS_IOS_PROD_CLIENT_ID: 'Your PROD Google Services IOS Client ID',
+	GS_IOS_PROD_REVERSED_CLIENT_ID: 'Your PROD Google Services Reversed Client ID',
+	GS_IOS_PROD_API_KEY: 'Your PROD Google Services IOS API Key',
+	GS_IOS_PROD_APP_ID: 'Your PROD Google Services App ID',
+	GS_ANDROID_PROD_CLIENT_ID: 'Your PROD Google Services Android Client ID',
+	GS_ANDROID_PROD_API_KEY: 'Your PROD Google Services Android API Key',
+	GS_ANDROID_PROD_APP_ID: 'Your PROD Google Services App ID',
 
-exports.GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEY
-exports.GOOGLE_MAPS_API_KEY_PH = GOOGLE_MAPS_API_KEY_PH
+	/* QA ONLY */
+	GOOGLE_ANALYTICS_ID_QA: 'Your QA Google Analytics ID',
+	AUTH_SERVICE_API_KEY_QA: 'Your QA Auth Service API Key',
+	GS_QA_PROJECT_ID: 'Your QA Google Services Project ID',
+	GS_QA_STORAGE_BUCKET: 'Your QA Google Services Storage Bucket',
+	GS_QA_FIREBASE_URL: 'Your QA Firebase URL',
+	GS_QA_PROJECT_NUMBER: 'Your QA Google Services Project Number',
+	GS_IOS_QA_CLIENT_ID: 'Your QA Google Services IOS Client ID',
+	GS_IOS_QA_REVERSED_CLIENT_ID: 'Your QA Google Services Reversed Client ID',
+	GS_IOS_QA_API_KEY: 'Your QA Google Services IOS API Key',
+	GS_IOS_QA_APP_ID: 'Your QA Google Services App ID',
+	GS_ANDROID_QA_CLIENT_ID: 'Your QA Google Services Android Client ID',
+	GS_ANDROID_QA_API_KEY: 'Your QA Google Services Android API Key',
+	GS_ANDROID_QA_APP_ID: 'Your QA Google Services App ID',
 
-exports.GOOGLE_ANALYTICS_ID = GOOGLE_ANALYTICS_ID
-exports.GOOGLE_ANALYTICS_ID_PH = GOOGLE_ANALYTICS_ID_PH
+}```
 
-exports.FIREBASE_IOS_KEY = FIREBASE_IOS_KEY
-exports.FIREBASE_ANDROID_KEY = FIREBASE_ANDROID_KEY
-exports.FIREBASE_KEY_PH = FIREBASE_KEY_PH
-
-exports.AUTH_SERVICE_API_KEY = AUTH_SERVICE_API_KEY
-exports.AUTH_SERVICE_API_KEY_PH = AUTH_SERVICE_API_KEY_PH
+3. Insert QA or PROD values into your application via `npm run-script campus-qa` or `npm run-script campus-prod`

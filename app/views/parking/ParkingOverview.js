@@ -8,23 +8,19 @@ import logger from '../../util/logger'
 class ParkingOverview extends Component {
 	getTotalSpots() {
 		try {
-			const { structureData, spotsSelected } = this.props
+			const { structureData, selectedSpots } = this.props
 			let totalAvailableSpots = 0
-			if (Array.isArray(spotsSelected)) {
-				for (let i = 0; i < spotsSelected.length; i++) {
-					if (structureData.Availability && spotsSelected[i]) {
-						const parkingSpotsPerType = structureData.Availability[spotsSelected[i]]
-						if (Array.isArray(parkingSpotsPerType)) {
-							for (let j = 0; j < parkingSpotsPerType.length; j++) {
-								totalAvailableSpots += Number(parkingSpotsPerType[j].Open)
-							}
-						}
+			for (let i = 0; i < selectedSpots.length; i++) {
+				if (structureData.Availability && selectedSpots[i]) {
+					const parkingSpotsPerType = structureData.Availability[selectedSpots[i]]
+					if (parkingSpotsPerType) {
+						totalAvailableSpots += Number(parkingSpotsPerType.Open)
 					}
 				}
 			}
 			return totalAvailableSpots
-		} catch (error) {
-			logger.trackException(error, false)
+		} catch (err) {
+			logger.trackException(err, false)
 			return 0
 		}
 	}
@@ -33,51 +29,34 @@ class ParkingOverview extends Component {
 	// returns -1 if the structure does not have the specific type
 	getOpenPerType(currentType) {
 		const { structureData } = this.props
-
-		const tempType = structureData.Availability[currentType]
-		let openPerType = 0
-		if (tempType) {
-			for (let i = 0; i < tempType.length; i++) {
-				openPerType += Number(tempType[i].Open)
-			}
-			return openPerType
-		} else {
+		try {
+			return Number(structureData.Availability[currentType].Open)
+		} catch (err) {
 			return -1
 		}
 	}
 
 	getTotalPerType(currentType) {
 		const { structureData } = this.props
-		const tempType = structureData.Availability[currentType]
-		let totalPerType = 0
-		if (tempType) {
-			for (let i = 0; i < tempType.length; i++) {
-				totalPerType += Number(tempType[i].Total)
-			}
+		try {
+			return Number(structureData.Availability[currentType].Total)
+		} catch (err) {
+			return 0
 		}
-		return totalPerType
 	}
 
-	displaySpots() {
-		const message = 'Please select parking type'
-		if (this.getTotalSpots() === 0) {
-			return message
-		} else {
-			return this.getTotalSpots()
-		}
-	}
 
 	renderDetails() {
-		const { spotsSelected } = this.props
-		if (spotsSelected.length === 0) {
+		const { selectedSpots } = this.props
+		if (selectedSpots.length === 0) {
 			return null
-		} else if (spotsSelected.length === 1) {
+		} else if (selectedSpots.length === 1) {
 			return (
 				<View style={css.po_one_spot_selected}>
 					<ParkingDetail
-						spotType={spotsSelected[0]}
-						spotsAvailable={this.getOpenPerType(spotsSelected[0])}
-						totalSpots={this.getTotalPerType(spotsSelected[0])}
+						spotType={selectedSpots[0]}
+						spotsAvailable={this.getOpenPerType(selectedSpots[0])}
+						totalSpots={this.getTotalPerType(selectedSpots[0])}
 						size={LAYOUT.MAX_CARD_WIDTH * 0.38}
 						widthMultiplier={LAYOUT.MAX_CARD_WIDTH * 0.037}
 						circleRadius={(LAYOUT.MAX_CARD_WIDTH * 0.14) / 2}
@@ -87,13 +66,13 @@ class ParkingOverview extends Component {
 					/>
 				</View>
 			)
-		} else if (spotsSelected.length === 2) {
+		} else if (selectedSpots.length === 2) {
 			return (
 				<View style={css.po_two_spots_selected}>
 					<ParkingDetail
-						spotType={spotsSelected[0]}
-						spotsAvailable={this.getOpenPerType(spotsSelected[0])}
-						totalSpots={this.getTotalPerType(spotsSelected[0])}
+						spotType={selectedSpots[0]}
+						spotsAvailable={this.getOpenPerType(selectedSpots[0])}
+						totalSpots={this.getTotalPerType(selectedSpots[0])}
 						size={LAYOUT.MAX_CARD_WIDTH * 0.32}
 						widthMultiplier={LAYOUT.MAX_CARD_WIDTH * 0.032}
 						circleRadius={(LAYOUT.MAX_CARD_WIDTH * 0.137) / 2}
@@ -101,11 +80,11 @@ class ParkingOverview extends Component {
 						progressNumber={LAYOUT.MAX_CARD_WIDTH * 0.12}
 						progressPercent={LAYOUT.MAX_CARD_WIDTH * 0.05}
 					/>
-					<View style={{ paddingHorizontal: 20 }} />
+					<View style={css.po_acp_gap_1} />
 					<ParkingDetail
-						spotType={spotsSelected[1]}
-						spotsAvailable={this.getOpenPerType(spotsSelected[1])}
-						totalSpots={this.getTotalPerType(spotsSelected[1])}
+						spotType={selectedSpots[1]}
+						spotsAvailable={this.getOpenPerType(selectedSpots[1])}
+						totalSpots={this.getTotalPerType(selectedSpots[1])}
 						size={LAYOUT.MAX_CARD_WIDTH * 0.32}
 						widthMultiplier={LAYOUT.MAX_CARD_WIDTH * 0.032}
 						circleRadius={(LAYOUT.MAX_CARD_WIDTH * 0.137) / 2}
@@ -119,9 +98,9 @@ class ParkingOverview extends Component {
 			return (
 				<View style={css.po_three_spots_selected}>
 					<ParkingDetail
-						spotType={spotsSelected[0]}
-						spotsAvailable={this.getOpenPerType(spotsSelected[0])}
-						totalSpots={this.getTotalPerType(spotsSelected[0])}
+						spotType={selectedSpots[0]}
+						spotsAvailable={this.getOpenPerType(selectedSpots[0])}
+						totalSpots={this.getTotalPerType(selectedSpots[0])}
 						size={LAYOUT.MAX_CARD_WIDTH * 0.25}
 						widthMultiplier={LAYOUT.MAX_CARD_WIDTH * 0.025}
 						circleRadius={(LAYOUT.MAX_CARD_WIDTH * 0.124) / 2}
@@ -129,11 +108,11 @@ class ParkingOverview extends Component {
 						progressNumber={LAYOUT.MAX_CARD_WIDTH * 0.08}
 						progressPercent={LAYOUT.MAX_CARD_WIDTH * 0.035}
 					/>
-					<View style={{ paddingHorizontal: 10 }} />
+					<View style={css.po_acp_gap_2} />
 					<ParkingDetail
-						spotType={spotsSelected[1]}
-						spotsAvailable={this.getOpenPerType(spotsSelected[1])}
-						totalSpots={this.getTotalPerType(spotsSelected[1])}
+						spotType={selectedSpots[1]}
+						spotsAvailable={this.getOpenPerType(selectedSpots[1])}
+						totalSpots={this.getTotalPerType(selectedSpots[1])}
 						size={LAYOUT.MAX_CARD_WIDTH * 0.25}
 						widthMultiplier={LAYOUT.MAX_CARD_WIDTH * 0.025}
 						circleRadius={(LAYOUT.MAX_CARD_WIDTH * 0.124) / 2}
@@ -141,11 +120,11 @@ class ParkingOverview extends Component {
 						progressNumber={LAYOUT.MAX_CARD_WIDTH * 0.08}
 						progressPercent={LAYOUT.MAX_CARD_WIDTH * 0.035}
 					/>
-					<View style={{ paddingHorizontal: 10 }} />
+					<View style={css.po_acp_gap_2} />
 					<ParkingDetail
-						spotType={spotsSelected[2]}
-						spotsAvailable={this.getOpenPerType(spotsSelected[2])}
-						totalSpots={this.getTotalPerType(spotsSelected[2])}
+						spotType={selectedSpots[2]}
+						spotsAvailable={this.getOpenPerType(selectedSpots[2])}
+						totalSpots={this.getTotalPerType(selectedSpots[2])}
 						size={LAYOUT.MAX_CARD_WIDTH * 0.25}
 						widthMultiplier={LAYOUT.MAX_CARD_WIDTH * 0.025}
 						circleRadius={(LAYOUT.MAX_CARD_WIDTH * 0.124) / 2}
@@ -159,9 +138,10 @@ class ParkingOverview extends Component {
 	}
 
 	render() {
-		const { structureData, spotsSelected } = this.props
+		const { structureData, selectedSpots, totalLotCount } = this.props
+
 		let message
-		if (Array.isArray(spotsSelected) && spotsSelected.length > 0) {
+		if (Array.isArray(selectedSpots) && selectedSpots.length) {
 			const totalSpots = this.getTotalSpots()
 			if (totalSpots === 1) {
 				message = '~' + totalSpots + ' Spot Available'
@@ -178,7 +158,9 @@ class ParkingOverview extends Component {
 				<Text style={css.po_structure_context}>{structureData.LocationContext}</Text>
 				<Text style={css.po_structure_spots_available}>{message}</Text>
 				{this.renderDetails()}
-				<Text style={css.po_structure_comingsoon}>More Lots Coming Soon!</Text>
+				{totalLotCount === 1 ? (
+					<Text style={css.po_structure_comingsoon}>More Lots Coming Soon!</Text>
+				) : null }
 			</View>
 		)
 	}
