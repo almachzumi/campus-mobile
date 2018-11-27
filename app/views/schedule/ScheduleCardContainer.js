@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import FullScheduleButton from './FullScheduleButton'
 import ScheduleCard from './ScheduleCard'
-import logger from '../../util/logger'
 import schedule from '../../util/schedule'
 
 const processData = (scheduleData) => {
@@ -30,7 +29,6 @@ const processData = (scheduleData) => {
 			break
 		case 3:
 			result.push(...classesData.WE)
-			console.log(result)
 			break
 		case 4:
 			result.push(...classesData.TH)
@@ -53,8 +51,8 @@ const processData = (scheduleData) => {
 		const newEndTime = moment(endTime, ['h:mm A']).format('HHmm')
 		times.push(newEndTime)
 	}
+
 	let i = 0
-	// const testTime = '0820'
 	while (times[i] < currTime) {
 		if (result.length > 4) {
 			result.shift()
@@ -62,14 +60,14 @@ const processData = (scheduleData) => {
 		}
 		i++
 	}
+
 	for (let j = 0; j < times.length; j++) {
 		if (times[j] > currTime) {
-			console.log(times[j])
 			selectedClass = j
 			break
 		}
 	}
-	console.log(times)
+
 	return result
 }
 
@@ -86,13 +84,11 @@ class ScheduleCardContainer extends React.Component {
 	}
 
 	componentWillMount() {
-		logger.ga('Card Mounted: Classes')
 		this.setState({ activeCourse: selectedClass })
 	}
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.scheduleData ||
 			(this.props.scheduleData && !nextProps.scheduleData)) {
-			// console.warn('receive new prop')
 			this.setState((state, props) => ({
 				...state,
 				upcoming4Courses: processData(props.scheduleData)
