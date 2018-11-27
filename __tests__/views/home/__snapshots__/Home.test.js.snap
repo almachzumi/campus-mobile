@@ -8,9 +8,6 @@ exports[`renders without crashing 1`] = `
   <Connect(withNavigation(ShuttleCardContainer))
     key="shuttle"
   />
-  <Connect(withNavigation(ParkingCardContainer))
-    key="parking"
-  />
   <Connect(DiningCardContainer)
     key="dining"
   />
