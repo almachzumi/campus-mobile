@@ -46,6 +46,7 @@ function* watchData() {
 			yield put({ type: 'UPDATE_DINING' })
 			yield put({ type: 'UPDATE_SCHEDULE' })
 			yield put({ type: 'SYNC_USER_PROFILE' })
+			yield put({ type: 'SEND_TUTOR_NOTIFICATION' })
 		} catch (err) {
 			console.log(err)
 		}

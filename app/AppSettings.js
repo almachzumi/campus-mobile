@@ -4,6 +4,7 @@ module.exports = {
 	APP_NAME: 'Campus Mobile',
 	GOOGLE_ANALYTICS_ID: 'GOOGLE_ANALYTICS_ID_PH',
 
+
 	/* ENDPOINTS */
 	/* QA */
 	AUTH_SERVICE_API_URL: 'https://3hepzvdimd.execute-api.us-west-2.amazonaws.com/dev/v1/access-profile',
@@ -15,6 +16,10 @@ module.exports = {
 	MP_REGISTRATION_API_URL: 'https://api-qa.ucsd.edu:8243/mp-registration/1.0.0',
 	MESSAGES_TOPICS_URL: 'https://s3-us-west-1.amazonaws.com/ucsd-mobile-dev/mock-apis/messaging/topics.json',
 	SHUTTLE_PATHS_URL: 'https://11wl1gc3v9.execute-api.us-west-2.amazonaws.com/dev/polylines/',
+
+	/* TUTORING */
+	TUTORING_SCHE_URL: 'https://s3-us-west-1.amazonaws.com/ucsd-mobile-dev/mock-apis/tutoring/tutors-v2.json',
+	TUTORING_CLASSES_URL: 'https://okx7bcw5rg.execute-api.us-west-2.amazonaws.com/dev/class_list',
 
 	/* PROD */
 	// SHUTTLE
@@ -59,6 +64,7 @@ module.exports = {
 	SHUTTLE_MASTER_TTL: 3600000, // 1 hour
 	USER_PROFILE_SYNC_TTL: 3600000, // 1 hour
 	QUICKLINKS_API_TTL: 86400000, // 1 day
+	TUTOR_SAGA_TTL: 60000,
 
 	/* TIMEOUTS */
 	HTTP_REQUEST_TTL: 15000, // 15 seconds

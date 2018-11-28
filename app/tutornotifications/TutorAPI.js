@@ -2,15 +2,17 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var request  = require('request');
 
+// TODO:
+//COMENT OUT / REMOVE WHEN SAGA IS DONE
 const tutors_url = "https://s3-us-west-1.amazonaws.com/ucsd-mobile-dev/mock-apis/tutoring/tutors-v2.json";
 const classes_url = "https://okx7bcw5rg.execute-api.us-west-2.amazonaws.com/dev/class_list";
-
 
 /*
 		Pure javascript implementation of SI sessions and class schedule
 		getting connected and parsed through from json endpoints
 */
 
+//TODO: Useless when SAGA is implemented
 function getAPI() {
 
 		var xmlhttp = new XMLHttpRequest();
@@ -20,27 +22,30 @@ function getAPI() {
 		xmlhttp.onreadystatechange = function() {
 		    if (this.readyState == 4 && this.status == 200) {
 						var dict = populateDict(JSON.parse(this.responseText));
-						//printDict(dict);
 						classWithSISession(dict);
 		    }
 		};
+}
+
+//TODO: Useless when SAGA is implemented
+function classWithSISession(dict){
+		var xmlhttp2 = new XMLHttpRequest();
+		xmlhttp2.open("GET", classes_url, true);
+		xmlhttp2.send();
+
+		xmlhttp2.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+					getTutorHours(dict, populateArr(JSON.parse(this.responseText)));
+			}
+	};
 }
 
 function populateDict(str_json) {
 		var dict = [];
 
 		for (var key in str_json.data) {
-		    if (str_json.data.hasOwnProperty(key)) {
-						var arr = [];
-						for (var key2 in str_json.data[key]) {
-								arr.push(str_json.data[key][key2]);
-						}
-		    }
-				console.log(key.toString());
-				dict[key.toString()] = arr;
-
+				dict[key.toString()] = str_json.data[key];
 		}
-
 		return dict;
 }
 
@@ -53,43 +58,49 @@ function printDict(dict) {
 }
 
 function getTutorHours(tutorDict, arr) {
-		//console.log(tutorDict["MATH_2"]);
 
-		//var keys = Object.keys(tutorDict);
-		//console.log(keys);
-
+		var strToAlert = "";
 		for (var i = 0 ; i < arr.length; i++) {
-				console.log(arr[i] + " has tutoring at....")
-				if (!tutorDict[arr[i]]) {
-						console.log("		No tutoring sessions set");
+				var curr = arr[i].split("___");
+				var instructor = curr[1];
+				var class_name = curr[0]
+
+				console.log(class_name + " has tutoring at:")
+
+				if (!tutorDict[class_name]) {
+						console.log(" *** No tutoring sessions set");
 				}
 				else {
-						console.log(tutorDict[arr[i]]);
+						var class_dict = tutorDict[class_name];
+						if (!class_dict[instructor]) {
+								console.log(" *** A tutoring session exists for this class, but not this instructor");
+						}
+						else {
+							var tutoring_data = class_dict[instructor];
+							console.log(" *** A tutoring session exists for this class, and this instructor");
+							for (var j = 0; j < tutoring_data.length; j++) {
+									console.log(tutoring_data[j]);
+							}
+						}
 				}
+				console.log("");
 		}
 
 }
 
-function classWithSISession(dict){
-	//request gets the JSON object in a string format
-	request(classes_url),
-			function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-					//creating a new variable called data, that contains the JSON object after the string is converted
-					var jsonData = JSON.parse(body);
-					//this section needs to be in a for loop, as we will add all the courses and professors which will
-					//have an SI session matching the student's schedule
-					var arr = [];
-					for (var key in jsonData.data) {
-						if (jsonData.data.hasOwnProperty(key)) {
-								arr.push(jsonData.data[key].subject_code + "_" + jsonData.data[key].course_code);
-						}
-					}
-					getTutorHours(dict, arr);
+function populateArr(jsonData) {
+	//var jsonData = str_json.;
+	var arr = [];
+	for (var key in jsonData.data) {
 
-					return null;
-			}
-	});
+		var instructor = jsonData.data[key]["section_data"][0]["instructor_name"];
+		if (jsonData.data.hasOwnProperty(key)) {
+				arr.push(jsonData.data[key].subject_code + "_" + jsonData.data[key].course_code
+									+ "___" + instructor);
+		}
+	}
+	arr.push("MATH_3C___Tu, Yucheng");
+	return arr;
 }
 
 getAPI();

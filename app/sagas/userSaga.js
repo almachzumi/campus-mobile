@@ -136,6 +136,7 @@ function* queryUserData() {
 	// INITIAL USER DATA CALLS
 	// perform first data calls when user is logged in
 	yield put({ type: 'UPDATE_SCHEDULE' })
+	yield put({ type: 'SEND_TUTOR_NOTIFICATION' })
 	yield put({ type: 'UPDATE_MESSAGES' })
 }
 // Used when an API call requires an access token and the current
