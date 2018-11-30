@@ -34,10 +34,14 @@ function* sendTutorNotification() {
 	const { lastUpdated } = yield select(getTutor)
 	const { subscribedTopics } = profile
 
+	console.log(isLoggedIn)
+	console.log(data)
+	console.log(subscribedTopics)
+
 	if (!isLoggedIn) return
 
 	// continue if user subscribed to topic
-	if (!subscribedTopics.contains('tutor')) return
+	if (!subscribedTopics.contains('tutoring')) return
 
 	// continue if schedule is empty or last update is longer than TUTOR_SAGA_TTL
 	if (data != null && lastUpdated < TUTOR_SAGA_TTL) return

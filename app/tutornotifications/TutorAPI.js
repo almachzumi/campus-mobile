@@ -49,56 +49,54 @@ function populateDict(str_json) {
 }
 
 function printDict(dict) {
-		for (var key in dict) {
-		    if (dict.hasOwnProperty(key)) {
-		        console.log(key, dict[key]);
-		    }
+	for (var key in dict) {
+		if (dict.hasOwnProperty(key)) {
+			console.log(key, dict[key])
 		}
+	}
 }
 
 function getTutorHours(tutorDict, arr) {
-		var strToAlert = "";
-		for (var i = 0 ; i < arr.length; i++) {
-				var curr = arr[i].split("___");
-				var instructor = curr[1];
-				var class_name = curr[0]
+	for (let i = 0; i < arr.length; i++) {
+		const curr = arr[i].split('___')
+		const instructor = curr[1]
+		const class_name = curr[0]
 
-				console.log(class_name + " has tutoring at:")
+		console.log(class_name + ' has tutoring at:')
 
-				if (!tutorDict[class_name]) {
-						console.log(" *** No tutoring sessions set");
-				}
-				else {
-						var class_dict = tutorDict[class_name];
-						if (!class_dict[instructor]) {
-								console.log(" *** A tutoring session exists for this class, but not this instructor");
-						}
-						else {
-							var tutoring_data = class_dict[instructor];
-							console.log(" *** A tutoring session exists for this class, and this instructor");
-							for (var j = 0; j < tutoring_data.length; j++) {
-									console.log(tutoring_data[j]);
-							}
-						}
-				}
-				console.log("");
+		if (!tutorDict[class_name]) {
+			console.log(' *** No tutoring sessions set')
 		}
-
+		else {
+			const class_dict = tutorDict[class_name]
+			if (!class_dict[instructor]) {
+				console.log(' *** A tutoring session exists for this class, but not this instructor')
+			}
+			else {
+				const tutoring_data = class_dict[instructor]
+				console.log(' *** A tutoring session exists for this class, and this instructor')
+				for (let j = 0; j < tutoring_data.length; j++) {
+					console.log(tutoring_data[j])
+				}
+			}
+		}
+		console.log('')
+	}
 }
 
 function populateArr(jsonData) {
-	//var jsonData = str_json.;
-	var arr = [];
+	// var jsonData = str_json.;
+	const arr = [];
 	for (var key in jsonData.data) {
 
-		var instructor = jsonData.data[key]["section_data"][0]["instructor_name"];
+		let instructor = jsonData.data[key]['section_data'][0]['instructor_name']
 		if (jsonData.data.hasOwnProperty(key)) {
 				arr.push(jsonData.data[key].subject_code + "_" + jsonData.data[key].course_code
-									+ "___" + instructor);
+									+ "___" + instructor)
 		}
 	}
-	arr.push("MATH_3C___Tu, Yucheng");
-	return arr;
+	arr.push('MATH_3C___Tu, Yucheng')
+	return arr
 }
 
-getAPI();
+getAPI()
