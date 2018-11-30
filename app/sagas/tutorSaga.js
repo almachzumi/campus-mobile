@@ -66,7 +66,7 @@ function* sendTutorNotification() {
 
 	//TESTING
 	console.log(tutorData)
-	const tutorDict = TutorAPI.(tutorData)
+	//const tutorDict = TutorAPI.(tutorData)
 	//console.log(tutorDict)
 	console.log(tutorDict)
 	//for(var key in tutorDict)
@@ -94,7 +94,7 @@ function* sendTutorNotification() {
 			}
 		}
 		try {
-			// const messageID = JSON.parse(yield authorizedFetch(AppSettings.MYMESSAGES_API_URL, message))
+			// const messageID = JSON.parse(yield authorizedFetch(AppSettings.SEND_TOPIC_MESSAGE_URL, message))
 			console.log(message)
 
 			Toast.showWithGravity(
