@@ -6,16 +6,16 @@ const TutorAPI = {
 	/* TUTOR API WRAPPER */
 	tutoringWrapper : function(tutoringData, classData) {
 			var dict = populateDict(JSON.parse(tutoringData));
-			//var arr =  populateArr(JSON.parse(classData));
-			//Add return before getTutorHours
+			var arr =  populateArr(JSON.parse(classData));
 
-			getTutorHours(dict, arr);
+			//Add return before getTutorHours
+			return getTutorHours(dict, arr);
 	},
 
 	//Call this from your tutoring session JSON
 	populateDict : function(str_json) {
 			var dict = [];
-			console.log('Went into tutorDict')
+			//console.log('Went into tutorDict')
 			for (var key in str_json.data) {
 					dict[key.toString()] = str_json.data[key];
 			}
@@ -26,7 +26,8 @@ const TutorAPI = {
 	//TODO: change console.log to object building to return
 	getTutorHours : function(tutorDict, arr) {
 
-			var strToAlert = "";
+			var arrToReturn = [];
+
 			for (var i = 0 ; i < arr.length; i++) {
 					var curr = arr[i].split("___");
 					var instructor = curr[1];
@@ -46,35 +47,40 @@ const TutorAPI = {
 								var tutoring_data = class_dict[instructor];
 								console.log(" *** A tutoring session exists for this class, and this instructor");
 								for (var j = 0; j < tutoring_data.length; j++) {
-										console.log(tutoring_data[j]);
+										arrToReturn.push(tutoring_data[j]);
 								}
 							}
 					}
 					console.log("");
 			}
-			//Add return with data structure
+			return arrToReturn;
 	},
 
 	populateArr : function(jsonData) {
 		//var jsonData = str_json.;
 		var arr = [];
-		console.log('JsonData: ' + jsonData.data)
+		//console.log('JsonData: ' + jsonData.data)
 		for (var key in jsonData.data) {
-			console.log('Inside for loop')
+			//console.log('Inside for loop')
 			var instructor = jsonData.data[key]["section_data"][0]["instructor_name"];
-			console.log('The result of instructor' + instructor)
+			//console.log('The result of instructor' + instructor)
 			if (jsonData.data.hasOwnProperty(key)) {
 					arr.push(jsonData.data[key].subject_code + "_" + jsonData.data[key].course_code
 										+ "___" + instructor);
 			}
 		}
-		console.log(arr)
+		//console.log(arr)
 		//arr.push("MATH_3C___Tu, Yucheng");
 		return arr;
 	},
+}
+
+export default TutorAPI
 
 
-	/** LEGACY CODE FOR TESTING / DEVELOPMENT **/
+
+
+/** LEGACY CODE FOR TESTING / DEVELOPMENT **/
 	// TODO:
 	//COMMENT OUT / REMOVE WHEN SAGA IS DONE
 	/*const tutors_url = "https://s3-us-west-1.amazonaws.com/ucsd-mobile-dev/mock-apis/tutoring/tutors-v2.json";
@@ -115,8 +121,4 @@ const TutorAPI = {
 				}
 		};
 	}*/
-}
-
-export default TutorAPI
-
 //getAPI();
