@@ -52,10 +52,9 @@ function* sendTutorNotification() {
 
 	const userEmail = profile.username + '@ucsd.edu'  // change how to set email
 	*/
-	const sessionList = []
 	const tutorData = yield call(TutorService.FetchTutoring)
 
-	sessionList = TutorAPI.tutoringWrapper(tutorData, data);
+	var sessionList = TutorAPI.tutoringWrapper(tutorData, data);
 
 
 
