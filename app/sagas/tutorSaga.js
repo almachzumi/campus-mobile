@@ -55,7 +55,7 @@ function* sendTutorNotification() {
 	const sessionList = []
 	const tutorData = yield call(TutorService.FetchTutoring)
 
-	TutorAPI.tutoringWrapper(tutorData, data);
+	sessionList = TutorAPI.tutoringWrapper(tutorData, data);
 
 
 
