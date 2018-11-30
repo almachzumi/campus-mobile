@@ -1,102 +1,123 @@
 
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const request = require('request');
-
-// TODO:
-// COMENT OUT / REMOVE WHEN SAGA IS DONE
-const tutors_url = 'https://s3-us-west-1.amazonaws.com/ucsd-mobile-dev/mock-apis/tutoring/tutors-v2.json';
-const classes_url = 'https://okx7bcw5rg.execute-api.us-west-2.amazonaws.com/dev/class_list';
+//REMOVE IN FUTURE
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var request  = require('request');
 
 /*
 		Pure javascript implementation of SI sessions and class schedule
 		getting connected and parsed through from json endpoints
 */
 
-// TODO: Useless when SAGA is implemented
-function getAPI() {
-	const xmlhttp = new XMLHttpRequest()
-	xmlhttp.open('GET', tutors_url, true)
-	xmlhttp.send()
+/* TUTOR API WRAPPER */
+function tutoringWrapper(tutoringData, classData) {
+		var dict = populateDict(JSON.parse(tutoringData));
+		var arr =  populateArr(JSON.parse(classData));
+		//Add return before getTutorHours
 
-	xmlhttp.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {
-			const dict = populateDict(JSON.parse(this.responseText));
-			classWithSISession(dict);
-		}
-	}
+		getTutorHours(dict, arr);
 }
 
-// TODO: Useless when SAGA is implemented
-function classWithSISession(dict) {
-	const xmlhttp2 = new XMLHttpRequest()
-	xmlhttp2.open('GET', classes_url, true)
-	xmlhttp2.send()
-
-	xmlhttp2.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {
-			getTutorHours(dict, populateArr(JSON.parse(this.responseText)))
-		}
-	}
-}
-
+//Call this from your tutoring session JSON
 function populateDict(str_json) {
-	const dict = []
+		var dict = [];
 
-	for (var key in str_json.data) {
-		dict[key.toString()] = str_json.data[key]
-	}
-	return dict
-}
-
-function printDict(dict) {
-	for (var key in dict) {
-		if (dict.hasOwnProperty(key)) {
-			console.log(key, dict[key])
+		for (var key in str_json.data) {
+				dict[key.toString()] = str_json.data[key];
 		}
-	}
+		return dict;
 }
 
+//Logic to determine class / tutoring overlapping
+//TODO: change console.log to object building to return
 function getTutorHours(tutorDict, arr) {
-	for (let i = 0; i < arr.length; i++) {
-		const curr = arr[i].split('___')
-		const instructor = curr[1]
-		const class_name = curr[0]
 
-		console.log(class_name + ' has tutoring at:')
+		var strToAlert = "";
+		for (var i = 0 ; i < arr.length; i++) {
+				var curr = arr[i].split("___");
+				var instructor = curr[1];
+				var class_name = curr[0]
 
-		if (!tutorDict[class_name]) {
-			console.log(' *** No tutoring sessions set')
-		}
-		else {
-			const class_dict = tutorDict[class_name]
-			if (!class_dict[instructor]) {
-				console.log(' *** A tutoring session exists for this class, but not this instructor')
-			}
-			else {
-				const tutoring_data = class_dict[instructor]
-				console.log(' *** A tutoring session exists for this class, and this instructor')
-				for (let j = 0; j < tutoring_data.length; j++) {
-					console.log(tutoring_data[j])
+				console.log(class_name + " has tutoring at:")
+
+				if (!tutorDict[class_name]) {
+						console.log(" *** No tutoring sessions set");
 				}
-			}
+				else {
+						var class_dict = tutorDict[class_name];
+						if (!class_dict[instructor]) {
+								console.log(" *** A tutoring session exists for this class, but not this instructor");
+						}
+						else {
+							var tutoring_data = class_dict[instructor];
+							console.log(" *** A tutoring session exists for this class, and this instructor");
+							for (var j = 0; j < tutoring_data.length; j++) {
+									console.log(tutoring_data[j]);
+							}
+						}
+				}
+				console.log("");
 		}
-		console.log('')
-	}
+		//Add return with data structure
 }
 
 function populateArr(jsonData) {
-	// var jsonData = str_json.;
-	const arr = [];
+	//var jsonData = str_json.;
+	var arr = [];
 	for (var key in jsonData.data) {
 
-		let instructor = jsonData.data[key]['section_data'][0]['instructor_name']
+		var instructor = jsonData.data[key]["section_data"][0]["instructor_name"];
 		if (jsonData.data.hasOwnProperty(key)) {
 				arr.push(jsonData.data[key].subject_code + "_" + jsonData.data[key].course_code
-									+ "___" + instructor)
+									+ "___" + instructor);
 		}
 	}
-	arr.push('MATH_3C___Tu, Yucheng')
-	return arr
+	//arr.push("MATH_3C___Tu, Yucheng");
+	return arr;
 }
 
-getAPI()
+
+/** LEGACY CODE FOR TESTING / DEVELOPMENT **/
+// TODO:
+//COMMENT OUT / REMOVE WHEN SAGA IS DONE
+const tutors_url = "https://s3-us-west-1.amazonaws.com/ucsd-mobile-dev/mock-apis/tutoring/tutors-v2.json";
+const classes_url = "https://okx7bcw5rg.execute-api.us-west-2.amazonaws.com/dev/class_list";
+
+//Print function
+function printDict(dict) {
+		for (var key in dict) {
+		    if (dict.hasOwnProperty(key)) {
+		        console.log(key, dict[key]);
+		    }
+		}
+}
+
+//Import tutor JSON data
+function getAPI() {
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open("GET", tutors_url, true);
+		xmlhttp.send();
+
+		xmlhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+						var dict = populateDict(JSON.parse(this.responseText));
+						classWithSISession(dict);
+		    }
+		};
+}
+
+//Import class JSON data
+function classWithSISession(dict){
+		var xmlhttp2 = new XMLHttpRequest();
+		xmlhttp2.open("GET", classes_url, true);
+		xmlhttp2.send();
+
+		xmlhttp2.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+					getTutorHours(dict, populateArr(JSON.parse(this.responseText)));
+			}
+	};
+}
+
+
+
+getAPI();
