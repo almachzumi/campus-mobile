@@ -81,16 +81,15 @@ function* sendTutorNotification() {
 		const messageContent = 'A tutoring session for your class is about to begin! Come to ' + sessionList[i].building +
 		' ' + sessionList[i].room + ' at ' + sessionList[i].time + ' for your ' + sessionList[i].course + ' session'
 		const message = {
-			to: {
-				users: [
-					userEmail
-				]
-			},
-			body: {
-				title: 'Upcoming SI sessions',
+
+			"to": {
+        		"topics": ["tutoring"]
+    		},
+    		"body": {
+    			title: 'Upcoming SI sessions',
 				message: messageContent,
 				data: {}
-			}
+    		}
 		}
 		try {
 			// const messageID = JSON.parse(yield authorizedFetch(AppSettings.SEND_TOPIC_MESSAGE_URL, message))
