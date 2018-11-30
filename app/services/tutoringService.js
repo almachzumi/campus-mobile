@@ -10,8 +10,13 @@ const TutoringService = {
 
 	FetchTutoring() {
 		return fetch(AppSettings.TUTORING_SCHE_URL)
-			.then(response => response.json())
-			.then(responseData => responseData)
+			.then(response => {
+				console.log("No errors with tutoring service")
+				return response.json()
+			})
+			.then(responseData => {
+				return responseData
+			})
 			.catch(err => console.log('Error fetching tutoring schedule: ' + err))
 	}
 }

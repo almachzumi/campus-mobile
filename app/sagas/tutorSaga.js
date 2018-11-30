@@ -1,7 +1,8 @@
-// import { delay } from 'redux-saga'
-import { /* call,*/ put, select, takeLatest } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
+import { call, put, select, takeLatest } from 'redux-saga/effects'
 import Toast from 'react-native-simple-toast'
-// import TutorAPI_React from 'TutorAPI_React'
+import TutorAPI from '../tutornotifications/TutorAPI.js'
+import TutorService from '../services/tutoringService.js'
 // import { authorizedFetch } from '../util/auth'
 
 import logger from '../util/logger'
@@ -11,15 +12,16 @@ const getSchedule = state => (state.schedule)
 const getUserData = state => (state.user)
 const getTutor = state => (state.tutor)
 
-// function* updateNotification() {
-// 	while (true) {
-// 		try {
-// 			yield put({ type: 'SEND_TUTOR_NOTIFICATION' })
-// 		} catch (err) {
-// 			console.log(err)
-// 		}
-// 		yield delay(TUTOR_SAGA_TTL)
-// }
+function* updateNotification() {
+ 	while (true) {
+ 		try {
+ 			yield put({ type: 'SEND_TUTOR_NOTIFICATION' })
+ 		} catch (err) {
+ 			console.log(err)
+ 		}
+ 		yield delay(TUTOR_SAGA_TTL)
+ }
+}
 
 function* sendTutorNotification() {
 	console.log('attempted send notification')
@@ -38,17 +40,39 @@ function* sendTutorNotification() {
 	console.log(data)
 	console.log(subscribedTopics)
 
-	if (!isLoggedIn) return
+
+	//if (!isLoggedIn) return
 
 	// continue if user subscribed to topic
-	if (!subscribedTopics.contains('tutoring')) return
+	//if (!subscribedTopics.contains('tutoring')) return
 
 	// continue if schedule is empty or last update is longer than TUTOR_SAGA_TTL
+	/*
 	if (data != null && lastUpdated < TUTOR_SAGA_TTL) return
 
 	const userEmail = profile.username + '@ucsd.edu'  // change how to set email
-
+	*/
 	const sessionList = []
+	const tutorData = yield call(TutorService.FetchTutoring)
+
+	TutorAPI.tutoringWrapper(tutorData, data);
+
+
+
+
+
+
+
+
+	//TESTING
+	console.log(tutorData)
+	const tutorDict = TutorAPI.(tutorData)
+	//console.log(tutorDict)
+	console.log(tutorDict)
+	//for(var key in tutorDict)
+	//{
+	//	console.log(key)
+	//}
 
 	// todo: get all tutor session for this student and push into sessionList
 
@@ -87,7 +111,7 @@ function* sendTutorNotification() {
 
 function* tutorSaga() {
 	yield takeLatest('SEND_TUTOR_NOTIFICATION', sendTutorNotification)
-	// yield call(updateNotification)
+	 yield call(updateNotification)
 }
 
 export default tutorSaga
