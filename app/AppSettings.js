@@ -64,7 +64,7 @@ module.exports = {
 	SHUTTLE_MASTER_TTL: 3600000, // 1 hour
 	USER_PROFILE_SYNC_TTL: 3600000, // 1 hour
 	QUICKLINKS_API_TTL: 86400000, // 1 day
-	TUTOR_SAGA_TTL: 5000, //5 second
+	TUTOR_SAGA_TTL: 15000, // 15 seconds
 
 	/* TIMEOUTS */
 	HTTP_REQUEST_TTL: 15000, // 15 seconds

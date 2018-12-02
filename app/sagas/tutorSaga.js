@@ -1,8 +1,8 @@
 import { delay } from 'redux-saga'
 import { call, put, select, takeLatest } from 'redux-saga/effects'
 import Toast from 'react-native-simple-toast'
-import TutorAPI from '../tutornotifications/TutorAPI.js'
-import TutorService from '../services/tutoringService.js'
+import TutorAPI from '../tutornotifications/TutorAPI'
+import TutorService from '../services/tutoringService'
 // import { authorizedFetch } from '../util/auth'
 
 import logger from '../util/logger'
@@ -13,14 +13,14 @@ const getUserData = state => (state.user)
 const getTutor = state => (state.tutor)
 
 function* updateNotification() {
- 	while (true) {
- 		try {
- 			yield put({ type: 'SEND_TUTOR_NOTIFICATION' })
- 		} catch (err) {
- 			console.log(err)
- 		}
- 		yield delay(TUTOR_SAGA_TTL)
- }
+	while (true) {
+		try {
+			yield put({ type: 'SEND_TUTOR_NOTIFICATION' })
+		} catch (err) {
+			console.log(err)
+		}
+		yield delay(TUTOR_SAGA_TTL)
+	}
 }
 
 function* sendTutorNotification() {
@@ -41,10 +41,10 @@ function* sendTutorNotification() {
 	console.log(subscribedTopics)
 
 
-	//if (!isLoggedIn) return
+	// if (!isLoggedIn) return
 
 	// continue if user subscribed to topic
-	//if (!subscribedTopics.contains('tutoring')) return
+	// if (!subscribedTopics.contains('tutoring')) return
 
 	// continue if schedule is empty or last update is longer than TUTOR_SAGA_TTL
 	/*
@@ -54,24 +54,18 @@ function* sendTutorNotification() {
 	*/
 	const tutorData = yield call(TutorService.FetchTutoring)
 
-	var sessionList = TutorAPI.tutoringWrapper(tutorData, data);
+	const sessionList = TutorAPI.tutoringWrapper(tutorData, data)
 
 
-
-
-
-
-
-
-	//TESTING
+	// TESTING
 	console.log(tutorData)
-	//const tutorDict = TutorAPI.(tutorData)
-	//console.log(tutorDict)
-	console.log(tutorDict)
-	//for(var key in tutorDict)
-	//{
+	// const tutorDict = TutorAPI.(tutorData)
+	// console.log(tutorDict)
+	// console.log(tutorDict)
+	// for(var key in tutorDict)
+	// {
 	//	console.log(key)
-	//}
+	// }
 
 	// todo: get all tutor session for this student and push into sessionList
 
@@ -80,16 +74,16 @@ function* sendTutorNotification() {
 	for (let i = 0; i < sessionList.length; i++) {
 		const messageContent = 'A tutoring session for your class is about to begin! Come to ' + sessionList[i].building +
 		' ' + sessionList[i].room + ' at ' + sessionList[i].time + ' for your ' + sessionList[i].course + ' session'
-		const message = {
 
-			"to": {
-        		"topics": ["tutoring"]
-    		},
-    		"body": {
-    			title: 'Upcoming SI sessions',
+		const message = {
+			'to': {
+				'topics': ['tutoring']
+			},
+			'body': {
+				title: 'Upcoming SI sessions',
 				message: messageContent,
 				data: {}
-    		}
+			}
 		}
 		try {
 			// const messageID = JSON.parse(yield authorizedFetch(AppSettings.SEND_TOPIC_MESSAGE_URL, message))
@@ -109,7 +103,7 @@ function* sendTutorNotification() {
 
 function* tutorSaga() {
 	yield takeLatest('SEND_TUTOR_NOTIFICATION', sendTutorNotification)
-	 yield call(updateNotification)
+	yield call(updateNotification)
 }
 
 export default tutorSaga
