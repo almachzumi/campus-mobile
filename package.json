@@ -11,11 +11,12 @@
     "campus-qa": "node scripts/replace-all qa",
     "generate-docs": "./node_modules/.bin/jsdoc -c jsdoc.conf.json",
     "dev-fixes": "node scripts/dev-fixes",
-    "postinstall": "node scripts/postinstall-fixes"
+    "postinstall": "node scripts/postinstall-fixes",
+    "eslint": "./node_modules/.bin/eslint . --max-warnings=0"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "eslint . --max-warnings=0 && npm test"
+      "pre-commit": "./node_modules/.bin/eslint . --max-warnings=0 && npm test"
     }
   },
   "dependencies": {
