@@ -14,95 +14,53 @@ const getTutor = state => (state.tutor)
 
 function* updateNotification() {
 	while (true) {
+		console.log('updateNotification--------------------------------------------------')
+
 		try {
-			yield put({ type: 'SEND_TUTOR_NOTIFICATION' })
+			console.log('attempted send notification')
+
+			Toast.showWithGravity(
+				'will have message send out here',
+				Toast.LONG,
+				Toast.BOTTOM
+			)
+
+
+			const { data } = yield select(getSchedule)
+			const { isLoggedIn, profile } = yield select(getUserData)
+			const { lastUpdated } = yield select(getTutor)
+			const { subscribedTopics } = profile
+
+			console.log(isLoggedIn)
+			console.log(data)
+			console.log(subscribedTopics)
+
+			if (!isLoggedIn) return
+
+			// continue if user subscribed to topic
+			if (!subscribedTopics.contains('tutoring')) return
+
+			// continue if schedule is empty or last update is longer than TUTOR_SAGA_TTL
+			if (data != null && lastUpdated < TUTOR_SAGA_TTL) return
+
+			const tutorData = yield call(TutorService.FetchTutoring)
+			const sessionList = TutorAPI.tutoringWrapper(tutorData, data)
+
+
+			// TESTING
+			console.log('tutorData-----------------------------------------')
+			console.log(tutorData)
+			console.log('sessionList-----------------------------------------')
+			console.log(sessionList)
 		} catch (err) {
+			console.log('errn-----------------------------------')
 			console.log(err)
 		}
 		yield delay(TUTOR_SAGA_TTL)
 	}
 }
 
-function* sendTutorNotification() {
-	console.log('attempted send notification')
-	Toast.showWithGravity(
-		'will have message send out here',
-		Toast.LONG,
-		Toast.BOTTOM
-	)
-
-	const { data } = yield select(getSchedule)
-	const { isLoggedIn, profile } = yield select(getUserData)
-	const { lastUpdated } = yield select(getTutor)
-	const { subscribedTopics } = profile
-
-	console.log(isLoggedIn)
-	console.log(data)
-	console.log(subscribedTopics)
-
-
-	// if (!isLoggedIn) return
-
-	// continue if user subscribed to topic
-	// if (!subscribedTopics.contains('tutoring')) return
-
-	// continue if schedule is empty or last update is longer than TUTOR_SAGA_TTL
-	/*
-	if (data != null && lastUpdated < TUTOR_SAGA_TTL) return
-
-	const userEmail = profile.username + '@ucsd.edu'  // change how to set email
-	*/
-	const tutorData = yield call(TutorService.FetchTutoring)
-
-	const sessionList = TutorAPI.tutoringWrapper(tutorData, data)
-
-
-	// TESTING
-	console.log(tutorData)
-	// const tutorDict = TutorAPI.(tutorData)
-	// console.log(tutorDict)
-	// console.log(tutorDict)
-	// for(var key in tutorDict)
-	// {
-	//	console.log(key)
-	// }
-
-	// todo: get all tutor session for this student and push into sessionList
-
-	sessionList.push()
-
-	for (let i = 0; i < sessionList.length; i++) {
-		const messageContent = 'A tutoring session for your class is about to begin! Come to ' + sessionList[i].building +
-		' ' + sessionList[i].room + ' at ' + sessionList[i].time + ' for your ' + sessionList[i].course + ' session'
-
-		const message = {
-			'to': {
-				'topics': ['tutoring']
-			},
-			'body': {
-				title: 'Upcoming SI sessions',
-				message: messageContent,
-				data: {}
-			}
-		}
-		try {
-			// const messageID = JSON.parse(yield authorizedFetch(AppSettings.SEND_TOPIC_MESSAGE_URL, message))
-			console.log(message)
-
-			Toast.showWithGravity(
-				messageContent,
-				Toast.LONG,
-				Toast.BOTTOM
-			)
-		} catch (err) {
-			logger.trackException(err, false)
-		}
-	}
-	yield put({ type: 'SET_TUTOR' })
-}
-
 function* tutorSaga() {
-	yield takeLatest('SEND_TUTOR_NOTIFICATION', sendTutorNotification)
 	yield call(updateNotification)
 }
 

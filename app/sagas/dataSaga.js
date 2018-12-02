@@ -1,6 +1,7 @@
 import { delay } from 'redux-saga'
 import { put, call, select } from 'redux-saga/effects'
 import { Image } from 'react-native'
+import Toast from 'react-native-simple-toast'
 
 import WeatherService from '../services/weatherService'
 import SpecialEventsService from '../services/specialEventsService'
@@ -9,6 +10,10 @@ import EventService from '../services/eventService'
 import NewsService from '../services/newsService'
 import ParkingService from '../services/parkingService'
 import { fetchMasterStopsNoRoutes, fetchMasterRoutes } from '../services/shuttleService'
+import TutorService from '../services/tutoringService'
+
+import TutorAPI from '../tutornotifications/TutorAPI'
+
 import {
 	WEATHER_API_TTL,
 	SURF_API_TTL,
@@ -18,7 +23,8 @@ import {
 	NEWS_API_TTL,
 	DATA_SAGA_TTL,
 	SHUTTLE_MASTER_TTL,
-	PARKING_API_TTL
+	PARKING_API_TTL,
+	TUTOR_SAGA_TTL
 } from '../AppSettings'
 
 const getWeather = state => (state.weather)
@@ -31,6 +37,8 @@ const getCards = state => (state.cards)
 const getShuttle = state => (state.shuttle)
 const getUserData = state => (state.user)
 const getParkingData = state => (state.parking)
+const getSchedule = state => (state.schedule)
+const getTutor = state => (state.tutor)
 
 function* watchData() {
 	while (true) {
@@ -43,14 +51,59 @@ function* watchData() {
 			yield call(updateEvents)
 			yield call(updateNews)
 			yield call(updateShuttleMaster)
+			yield call(updateNotification)
 			yield put({ type: 'UPDATE_DINING' })
 			yield put({ type: 'UPDATE_SCHEDULE' })
 			yield put({ type: 'SYNC_USER_PROFILE' })
-			yield put({ type: 'SEND_TUTOR_NOTIFICATION' })
 		} catch (err) {
 			console.log(err)
 		}
 		yield delay(DATA_SAGA_TTL)
+	}
+}
+
+function* updateNotification() {
+	console.log('updateNotification--------------------------------------------------')
+
+	try {
+		console.log('Attempting to send notification-----------------------------------')
+
+		Toast.showWithGravity(
+			'Notification message toast test',
+			Toast.LONG,
+			Toast.BOTTOM
+		)
+
+
+		const { data } = yield select(getSchedule)
+		const { isLoggedIn, profile } = yield select(getUserData)
+		const { lastUpdated } = yield select(getTutor)
+		const { subscribedTopics } = profile
+
+		console.log(isLoggedIn)
+		console.log(data)
+		console.log(subscribedTopics)
+
+		if (!isLoggedIn) return
+
+		// continue if user subscribed to topic
+		if (!subscribedTopics.contains('tutoring')) return
+
+		// continue if schedule is empty or last update is longer than TUTOR_SAGA_TTL
+		if (data != null && lastUpdated < TUTOR_SAGA_TTL) return
+
+		const tutorData = yield call(TutorService.FetchTutoring)
+		const sessionList = TutorAPI.tutoringWrapper(tutorData, data)
+
+
+		// TESTING
+		console.log('tutorData-----------------------------------------')
+		console.log(tutorData)
+		console.log('sessionList-----------------------------------------')
+		console.log(sessionList)
+	} catch (err) {
+		console.log('errn-----------------------------------')
+		console.log(err)
 	}
 }
 
