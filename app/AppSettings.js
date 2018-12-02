@@ -51,7 +51,7 @@ module.exports = {
 	/* TTLs */
 	LOCATION_TTL: 5000, // 5 seconds
 	SHUTTLE_API_TTL: 15000, // 15 seconds
-	DATA_SAGA_TTL: 60000, // 1 minute
+	DATA_SAGA_TTL: 10000, // 1 minute
 	SCHEDULE_TTL: 300000,  // 5 minutes
 	PARKING_API_TTL: 300000,	// 5 minutes
 	WEATHER_API_TTL: 1800000, // 30 minutes
@@ -64,7 +64,7 @@ module.exports = {
 	SHUTTLE_MASTER_TTL: 3600000, // 1 hour
 	USER_PROFILE_SYNC_TTL: 3600000, // 1 hour
 	QUICKLINKS_API_TTL: 86400000, // 1 day
-	TUTOR_SAGA_TTL: 15000, // 15 seconds
+	TUTOR_SAGA_TTL: 10000, // 5 seconds
 
 	/* TIMEOUTS */
 	HTTP_REQUEST_TTL: 15000, // 15 seconds
