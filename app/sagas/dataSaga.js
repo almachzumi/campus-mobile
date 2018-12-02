@@ -102,7 +102,6 @@ function* updateNotification() {
 		console.log('updateNotification:sessionList-----------------------------------------')
 		console.log(sessionList)
 
-		/*
 		for (let i = 0; i < sessionList.length; i++) {
 			const messageContent = 'A tutoring session for your class is about to begin! Come to ' + sessionList[i].building +
 			' ' + sessionList[i].room + ' at ' + sessionList[i].time + ' for your ' + sessionList[i].course + ' session'
@@ -127,9 +126,9 @@ function* updateNotification() {
 					Toast.TOP
 				)
 			} catch (err) {
-				logger.trackException(err, false)
+				console.log('Err: ' + err)
 			}
-		*/
+		}
 	} catch (err) {
 		console.log('errn-----------------------------------')
 		console.log(err)
