@@ -63,44 +63,73 @@ function* watchData() {
 }
 
 function* updateNotification() {
-	console.log('updateNotification--------------------------------------------------')
-
 	try {
-		console.log('Attempting to send notification-----------------------------------')
-
-		Toast.showWithGravity(
-			'Notification message toast test',
-			Toast.LONG,
-			Toast.BOTTOM
-		)
-
+		console.log('dataSaga:updateNotification-----------------------------------')
 
 		const { data } = yield select(getSchedule)
 		const { isLoggedIn, profile } = yield select(getUserData)
 		const { lastUpdated } = yield select(getTutor)
 		const { subscribedTopics } = profile
 
-		console.log(isLoggedIn)
-		console.log(data)
-		console.log(subscribedTopics)
-
-		if (!isLoggedIn) return
-
-		// continue if user subscribed to topic
-		if (!subscribedTopics.contains('tutoring')) return
-
-		// continue if schedule is empty or last update is longer than TUTOR_SAGA_TTL
+		// Abort if data is null (i.e. no class schedule available) OR still inside current TTL window
 		if (data != null && lastUpdated < TUTOR_SAGA_TTL) return
+
+		// Abort if user is not logged in
+		if (!isLoggedIn) {
+			console.log('updateNotification: User not logged in.')
+			return
+		} else {
+			console.log('updateNotification: User logged in.')
+		}
+
+		// Abort if user is not subscribed to topic `tutoring`
+		if (!subscribedTopics.includes('tutoring')) {
+			console.log('updateNotification: Subscribed topics does not include: `Tutoring`')
+			return
+		} else {
+			console.log('updateNotification: Subscribed topics includes: `Tutoring`')
+		}
 
 		const tutorData = yield call(TutorService.FetchTutoring)
 		const sessionList = TutorAPI.tutoringWrapper(tutorData, data)
 
 
 		// TESTING
-		console.log('tutorData-----------------------------------------')
+		console.log('updateNotification:data------------------------------------')
+		console.log(data)
+		console.log('updateNotification:tutorData-----------------------------------------')
 		console.log(tutorData)
-		console.log('sessionList-----------------------------------------')
+		console.log('updateNotification:sessionList-----------------------------------------')
 		console.log(sessionList)
+
+		/*
+		for (let i = 0; i < sessionList.length; i++) {
+			const messageContent = 'A tutoring session for your class is about to begin! Come to ' + sessionList[i].building +
+			' ' + sessionList[i].room + ' at ' + sessionList[i].time + ' for your ' + sessionList[i].course + ' session'
+
+			const message = {
+				'to': {
+					'topics': ['tutoring']
+				},
+				'body': {
+					title: 'Upcoming SI sessions',
+					message: messageContent,
+					data: {}
+				}
+			}
+			try {
+				// const messageID = JSON.parse(yield authorizedFetch(AppSettings.SEND_TOPIC_MESSAGE_URL, message))
+				console.log(message)
+
+				Toast.showWithGravity(
+					messageContent,
+					Toast.LONG,
+					Toast.TOP
+				)
+			} catch (err) {
+				logger.trackException(err, false)
+			}
+		*/
 	} catch (err) {
 		console.log('errn-----------------------------------')
 		console.log(err)
