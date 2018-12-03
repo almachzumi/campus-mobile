@@ -4,16 +4,16 @@
 */
 const TutorAPI = {
 	/* TUTOR API WRAPPER */
-	tutoringWrapper: (tutoringData, classData) => {
-		const dict = this.populateDict(JSON.parse(tutoringData))
-		const arr =  this.populateArr(JSON.parse(classData))
+	tutoringWrapper(tutoringData, classData) {
+		const dict = this.populateDict(tutoringData)
+		const arr =  this.populateArr(classData)
 
 		// Add return before getTutorHours
 		return this.getTutorHours(dict, arr)
 	},
 
 	// Call this from your tutoring session JSON
-	populateDict: (str_json) => {
+	populateDict(str_json) {
 		const dict = []
 		for (let key in str_json.data) {
 			dict[key.toString()] = str_json.data[key]
@@ -23,7 +23,7 @@ const TutorAPI = {
 
 	// Logic to determine class / tutoring overlapping
 	// TODO: change console.log to object building to return
-	getTutorHours: (tutorDict, arr) => {
+	getTutorHours(tutorDict, arr) {
 		const arrToReturn = []
 
 		for (let i = 0;  i < arr.length; i++) {
@@ -45,6 +45,9 @@ const TutorAPI = {
 					const tutoring_data = class_dict[instructor]
 					console.log(' *** A tutoring session exists for this class, and this instructor')
 					for (let j = 0; j < tutoring_data.length; j++) {
+						const currTutorSession = tutoring_data[j]
+						const course = class_name.split('_')
+						currTutorSession.course = course[0] + ' ' + course[1]
 						arrToReturn.push(tutoring_data[j])
 					}
 				}
@@ -53,12 +56,16 @@ const TutorAPI = {
 		return arrToReturn
 	},
 
-	populateArr: (jsonData) => {
+	populateArr(jsonData) {
 		const arr = []
 		for (var key in jsonData.data) {
-			var instructor = jsonData.data[key]['section_data'][0]['instructor_name']
-			if (jsonData.data.hasOwnProperty(key)) {
-				arr.push(jsonData.data[key].subject_code + '_' + jsonData.data[key].course_code + '___' + instructor)
+			if (jsonData.data[key]['enrollment_status'] == 'EN') {
+				if (!(jsonData.data[key]['section_data'] === undefined || jsonData.data[key]['section_data'].length == 0)) {
+					var instructor = jsonData.data[key]['section_data'][0]['instructor_name']
+					if (jsonData.data.hasOwnProperty(key)) {
+						arr.push(jsonData.data[key].subject_code + '_' + jsonData.data[key].course_code + '___' + instructor)
+					}
+				}
 			}
 		}
 		return arr
